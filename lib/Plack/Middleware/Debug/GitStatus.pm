@@ -11,39 +11,89 @@ use Encode qw/ decode_utf8 /;
 use parent 'Plack::Middleware::Debug::Base';
 
 sub run {
-    my ( $self, $env, $panel ) = @_;
+    my ( $self, undef, $panel ) = @_;
 
     return sub {
+        my ( $branch, $info ) = $self->get_git_info;
         $panel->title( 'GitStatus' );
         $panel->nav_title( 'GitStatus' );
-        $panel->nav_subtitle( 'git status information' );
+        $panel->nav_subtitle( 'On branch ' . $branch );
+        $panel->content( $self->render_info( $info ) );
+    }
+}
 
-        my @info;
+sub render_info {
+    my $self = shift;
+    my $info = shift;
 
-        chdir $self->git_dir if $self->git_dir;
+    my $html = qq|<table><thead><tr><th colspan="2">|;
+
+    if ( $info->{ error } ) {
+        $html .= qq|Error</th></tr></thead><tbody>
+            <tr><td>Git reported an error</td><td>$info->{ error }</td></tr>
+        |;
+    }
+    else {
+        $html .= qq|Git status information</th></tr></thead><tbody>
+            <tr><td>Current Branch</td><td><pre>$info->{ current_branch }</pre></td></tr>
+            <tr><td>Status</td><td><pre>$info->{ status }</pre></td></tr>
+            <tr><th>Last commit</th><th></th></tr>
+            <tr><td>Date</td><td>$info->{ date }</td></tr>
+            <tr><td>Author</td><td>$info->{ author }</td></tr>
+            <tr><td>SHA-1</td><td>$info->{ sha_1 }</td></tr>
+            <tr><td>Message</td><td>$info->{ message }</td></tr>
+        |;
+    }
+
+    $html .= '</tbody></table>';
+
+    return $html;
+}
+
+sub get_git_info {
+    my $self = shift;
+
+    my ( $branch, $info ) = eval {
+        if ( my $dir = $self->git_dir ) {
+            if ( ! chdir $dir ) {
+                die "Could not change to directory '$dir': $!";
+            }
+        }
+
         my $current_branch = `git symbolic-ref HEAD 2>&1`;
 
         if ( $? ) {
-            push @info, 'Error', 'Not a git repository ';
-        }
-        else {
-            $current_branch =~ s|refs/heads/||;
-            push @info, 'Current branch', $current_branch;
-
-            my $status = `git status -s`;
-            $status = 'clean' unless $status;
-            push @info, 'Status', $status;
-
-            push @info, 'Last commit:', '';
-            my @ci_info = split /\0/, `git log -1 --pretty=format:%H%x00%an%x00%aD%x00%s`;
-            push @info, 'SHA-1', shift @ci_info;
-            push @info, 'Author', decode_utf8 shift @ci_info;
-            push @info, 'Date', shift @ci_info;
-            push @info, 'Message', decode_utf8 shift @ci_info;
+            die  "Git reported an error: $current_branch";
         }
 
-        $panel->content( $self->render_list_pairs( \@info ) );
+        $current_branch =~ s|refs/heads/||;
+        my %info = ( current_branch => $current_branch );
+        $info{ status } = $self->get_git_status;
+
+        my @ci_info = split /\0/, `git log -1 --pretty=format:%H%x00%an%x00%aD%x00%s`;
+        $info{ sha_1 }   = shift @ci_info;
+        $info{ author }  = decode_utf8 shift @ci_info;
+        $info{ date }    = shift @ci_info;
+        $info{ message } = decode_utf8 shift @ci_info;
+
+        return $current_branch, \%info;
+    };
+
+    if ( my $err = $@ ) {
+        return 'unknown', { error => $err };
     }
+    else {
+        return $branch, $info;
+    }
+}
+
+sub get_git_status {
+    my $self = shift;
+
+    my $status = `git status -s`;
+    return 'clean' unless $status;
+
+    return $status;
 }
 
 1;
