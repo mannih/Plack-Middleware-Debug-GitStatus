@@ -5,7 +5,7 @@ use warnings;
 our $VERSION = '0.01';
 $VERSION = eval $VERSION;
 
-use Plack::Util::Accessor qw( git_dir );
+use Plack::Util::Accessor qw( git_dir gitweb_url );
 use Encode qw/ decode_utf8 /;
 
 use parent 'Plack::Middleware::Debug::Base';
@@ -43,6 +43,10 @@ sub render_info {
             <tr><td>SHA-1</td><td>$info->{ sha_1 }</td></tr>
             <tr><td>Message</td><td>$info->{ message }</td></tr>
         |;
+
+        if ( my $url = $self->gitweb_url ) {
+            $html .= sprintf qq|<tr><td><a style="color: blue" href="$url" target="_blank">View</a></td><td></td></tr>\n|, $info->{ sha_1 };
+        }
     }
 
     $html .= '</tbody></table>';
@@ -119,6 +123,14 @@ Plack::Middleware::Debug::GitStatus - Display git status information about the d
      $app;
  };
 
+ # or if you want to specify a url to gitweb/gitalist/etc:
+ return builder {
+     enable 'Debug', panels => [ qw( Environment Response ) ];
+     enable 'Debug::GitStatus', gitweb_url => 'http://example.com/cgi-bin/gitweb?p=my_repo.git;h=%s';
+     $app;
+ };
+ 
+
 =head1 DESCRIPTION
 
 This panel gives you quick access to the most relevant git information:
@@ -130,6 +142,26 @@ This panel gives you quick access to the most relevant git information:
 =item git status information
 
 =item information about the most recent commit
+
+=back
+
+=head1 CONFIGURATION
+
+There are two optional parameters you can use to configure this panel plugin:
+
+=over
+
+=item git_dir
+
+The path to your repository in case the current dir of your application is
+outside of this.
+
+=item gitweb_url
+
+If you want the panel to give you a link to your gitweb, gitolite, etc installation,
+provide the URL here. You need to provide a string that will be used as a format
+string in a call to sprintf, thus the string needs to contain a %s which will be
+supplied with the sha-1 of the most recent commit. Example: 'http://localhost/somegitwebtool?hash=%s'
 
 =back
 
