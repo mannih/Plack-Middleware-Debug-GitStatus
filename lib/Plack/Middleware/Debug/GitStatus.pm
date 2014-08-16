@@ -161,9 +161,16 @@ outside of this.
 If you want the panel to give you a link to your gitweb, gitolite, etc installation,
 provide the URL here. You need to provide a string that will be used as a format
 string in a call to sprintf, thus the string needs to contain a %s which will be
-supplied with the sha-1 of the most recent commit. Example: 'http://localhost/somegitwebtool?hash=%s'
+supplied with the sha-1 of the most recent commit.
+
+Example: 'http://localhost/somegitwebtool?hash=%s'
 
 =back
+
+=head1 SEE ALSO
+
+L<https://metacpan.org/pod/Plack::Middleware::GitStatus> - Gives you the option to
+send a HTTP request to your server that will be answered with git status information.
 
 =head1 BUGS AND LIMITATIONS
 
