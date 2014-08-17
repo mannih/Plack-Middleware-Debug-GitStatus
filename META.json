@@ -49,7 +49,8 @@
       },
       "runtime" : {
          "requires" : {
-            "Plack" : "0"
+            "Plack" : "0",
+            "Plack::Middleware::Debug" : "0"
          }
       }
    },
@@ -65,7 +66,7 @@
          "web" : "https://github.com/mannih/Plack-Middleware-Debug-GitStatus"
       }
    },
-   "version" : "0.01",
+   "version" : "0.02",
    "x_contributors" : [
       "Manni Heumann <github@lxxi.org>"
    ]

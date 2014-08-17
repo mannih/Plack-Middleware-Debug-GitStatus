@@ -2,7 +2,7 @@ package Plack::Middleware::Debug::GitStatus;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 $VERSION = eval $VERSION;
 
 use Plack::Util::Accessor qw( git_dir gitweb_url );
