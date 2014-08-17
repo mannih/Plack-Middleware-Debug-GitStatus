@@ -26,13 +26,6 @@
       ]
    },
    "prereqs" : {
-      "build" : {
-         "requires" : {
-            "ExtUtils::MakeMaker" : "6.36",
-            "Test::MockModule" : "0",
-            "Test::Most" : "0"
-         }
-      },
       "configure" : {
          "requires" : {
             "Module::Build" : "0.38"
@@ -52,6 +45,14 @@
             "Plack" : "0",
             "Plack::Middleware::Debug" : "0"
          }
+      },
+      "test" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.36",
+            "Test::MockObject" : "0",
+            "Test::MockObject::Extends" : "0",
+            "Test::Most" : "0"
+         }
       }
    },
    "release_status" : "unstable",
@@ -66,7 +67,7 @@
          "web" : "https://github.com/mannih/Plack-Middleware-Debug-GitStatus"
       }
    },
-   "version" : "0.02",
+   "version" : "0.03",
    "x_contributors" : [
       "Manni Heumann <github@lxxi.org>"
    ]
