@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - Added a missing dependency to cpanfile
 
 0.01 2014-08-16T13:49:16Z
     - Initial release
