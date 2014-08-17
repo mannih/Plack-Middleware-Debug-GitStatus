@@ -1,8 +1,9 @@
 requires 'Plack';
 requires 'Plack::Middleware::Debug';
 
-on build => sub {
+on test => sub {
     requires 'ExtUtils::MakeMaker', '6.36';
-    requires 'Test::MockModule';
+    requires 'Test::MockObject';
+    requires 'Test::MockObject::Extends';
     requires 'Test::Most';
 };
