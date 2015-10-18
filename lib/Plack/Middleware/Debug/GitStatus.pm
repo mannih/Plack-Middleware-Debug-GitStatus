@@ -6,7 +6,7 @@ our $VERSION = '0.03';
 $VERSION = eval $VERSION;
 
 use Plack::Util::Accessor qw( git_dir gitweb_url );
-use Encode qw/ decode_utf8 /;
+use Encode qw/ decode_utf8 encode_utf8 /;
 
 use parent 'Plack::Middleware::Debug::Base';
 
@@ -51,7 +51,7 @@ sub render_info {
 
     $html .= '</tbody></table>';
 
-    return $html;
+    return encode_utf8 $html;
 }
 
 sub get_git_info {
