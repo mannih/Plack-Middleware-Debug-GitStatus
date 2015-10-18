@@ -4,7 +4,7 @@
       "Manni Heumann, C<< <cpan@lxxi.org> >>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.1.1, CPAN::Meta::Converter version 2.140640",
+   "generated_by" : "Minilla/v2.3.0, CPAN::Meta::Converter version 2.142060",
    "license" : [
       "perl_5"
    ],
@@ -67,7 +67,7 @@
          "web" : "https://github.com/mannih/Plack-Middleware-Debug-GitStatus"
       }
    },
-   "version" : "0.03",
+   "version" : "0.04",
    "x_contributors" : [
       "Manni Heumann <github@lxxi.org>"
    ]
