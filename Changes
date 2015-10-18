@@ -1,4 +1,5 @@
 {{$NEXT}}
+    - Fix: utf8-encode our output
 
 0.03 2014-08-17T07:45:44Z
     - Add some tests
